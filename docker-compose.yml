@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  node:
+    build: .
+    volumes: 
+      - .:/usr/src/app
+    ports: 
+      - 3000:3000
+    env_file:
+      - .env
+    environment:
+      DISCORD_KEY: ${DISCORD_KEY}

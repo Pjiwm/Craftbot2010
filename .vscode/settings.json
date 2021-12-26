@@ -1,0 +1,6 @@
+{
+    "javascript.format.semicolons": "remove",
+    "typescript.format.semicolons": "remove",
+    "editor.formatOnSave": true,
+    "workbench.editor.closeOnFileDelete": true
+}
