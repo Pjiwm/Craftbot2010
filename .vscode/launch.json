@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Run dev",
-            "command": "npm dev",
+            "command": "npm run dev",
             "request": "launch",
             "type": "node-terminal"
         }
