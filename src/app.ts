@@ -4,8 +4,8 @@ import fs from 'fs'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
 const TOKEN = process.env.DISCORD_KEY || '0'
-const TEST_GUILD_ID = ''
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
+const TEST_GUILD_ID = process.env.DISCORD_TEST_GUILD
+const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.ts'))
 const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -53,6 +53,20 @@ client.on('ready', () => {
             if (error) console.error(error)
         }
     })()
+
+    // Listener
+    client.on('interactionCreate', async interaction => {
+        if (!interaction.isCommand()) return
+        const command = client.commands.get(interaction.commandName)
+        if (!command) return
+        try {
+            await command.execute(interaction)
+        } catch (error) {
+            if (error) console.error(error)
+            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })
+        }
+    })
+
 
     // set activity and status
     client.user?.setActivity({
