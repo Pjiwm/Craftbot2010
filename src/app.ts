@@ -70,43 +70,4 @@ client.on('messageReactionAdd', async (reaction, user) => {
     console.log(`${reaction.count} user(s) have given the same reaction to this message!`)
 })
 
-// startup
-// client.on('ready', () => {
-//     console.log('bot is online')
-//     // registering the commands
-//     const CLIENT_ID = client.user?.id || '0'
-//     const rest = new REST({
-//         version: '9'
-//     }).setToken(TOKEN);
-
-//     (async () => {
-//         try {
-//             if (!TEST_GUILD_ID) {
-//                 await rest.put(
-//                     Routes.applicationCommands(CLIENT_ID), {
-//                     body: commands
-//                 },
-//                 )
-//                 console.log('Successfully registered application commands globally')
-//             } else {
-//                 await rest.put(
-//                     Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID), {
-//                     body: commands
-//                 },
-//                 )
-//                 console.log('Successfully registered application commands for development guild')
-//             }
-//         } catch (error) {
-//             if (error) console.error(error)
-//         }
-//     })()
-
-//     // set activity and status
-//     client.user?.setActivity({
-//         name: 'with your mom',
-//         type: 'PLAYING'
-//     })
-//     client.user?.setStatus('dnd')
-// })
-
 client.login(process.env.DISCORD_KEY)

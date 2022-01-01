@@ -9,6 +9,7 @@ export = {
     once: true,
     execute(client: Client, commands: any[]) {
         console.log('bot is online')
+        console.log(commands)
         // registering the commands
         const CLIENT_ID = client.user?.id || '0'
         const rest = new REST({
