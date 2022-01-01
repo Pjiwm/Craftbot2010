@@ -5,7 +5,8 @@ import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
 const TOKEN = process.env.DISCORD_KEY || '0'
 const TEST_GUILD_ID = process.env.DISCORD_TEST_GUILD
-const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.ts'))
+
+
 const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -16,13 +17,25 @@ const client = new Client({
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 })
 
-// get our commands
+// command handler
 const commands: any[] = []
+const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.ts'))
 client.commands = new Collection()
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`)
     commands.push(command.data.toJSON)
     client.commands.set(command.data.name, command)
+}
+
+// event handler
+const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.ts'))
+for (const file of eventFiles) {
+    const event = require(`./events/${file}`)
+    if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args))
+    } else {
+        client.on(event.name, (...args) => event.execute(...args))
+    }
 }
 
 // Command Listener
@@ -58,42 +71,42 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 
 // startup
-client.on('ready', () => {
-    console.log('bot is online')
-    // registering the commands
-    const CLIENT_ID = client.user?.id || '0'
-    const rest = new REST({
-        version: '9'
-    }).setToken(TOKEN);
+// client.on('ready', () => {
+//     console.log('bot is online')
+//     // registering the commands
+//     const CLIENT_ID = client.user?.id || '0'
+//     const rest = new REST({
+//         version: '9'
+//     }).setToken(TOKEN);
 
-    (async () => {
-        try {
-            if (!TEST_GUILD_ID) {
-                await rest.put(
-                    Routes.applicationCommands(CLIENT_ID), {
-                    body: commands
-                },
-                )
-                console.log('Successfully registered application commands globally')
-            } else {
-                await rest.put(
-                    Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID), {
-                    body: commands
-                },
-                )
-                console.log('Successfully registered application commands for development guild')
-            }
-        } catch (error) {
-            if (error) console.error(error)
-        }
-    })()
+//     (async () => {
+//         try {
+//             if (!TEST_GUILD_ID) {
+//                 await rest.put(
+//                     Routes.applicationCommands(CLIENT_ID), {
+//                     body: commands
+//                 },
+//                 )
+//                 console.log('Successfully registered application commands globally')
+//             } else {
+//                 await rest.put(
+//                     Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID), {
+//                     body: commands
+//                 },
+//                 )
+//                 console.log('Successfully registered application commands for development guild')
+//             }
+//         } catch (error) {
+//             if (error) console.error(error)
+//         }
+//     })()
 
-    // set activity and status
-    client.user?.setActivity({
-        name: 'with your mom',
-        type: 'PLAYING'
-    })
-    client.user?.setStatus('dnd')
-})
+//     // set activity and status
+//     client.user?.setActivity({
+//         name: 'with your mom',
+//         type: 'PLAYING'
+//     })
+//     client.user?.setStatus('dnd')
+// })
 
 client.login(process.env.DISCORD_KEY)
