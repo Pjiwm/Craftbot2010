@@ -27,7 +27,7 @@ for (const file of commandFiles) {
     commands.push(command.data)
     client.commands.set(command.data.name, command)
 }
-
+// register commands for development guild
 const rest = new REST({ version: '9' }).setToken(TOKEN);
 (async () => {
     try {
@@ -51,40 +51,11 @@ for (const file of eventFiles) {
     if (event.once) {
         client.once(event.name, (...args) => event.execute(...args))
     } else {
-        client.on(event.name, (...args) => event.execute(...args))
+        client.on(event.name, (...args) => {
+            event.execute(...args)
+            // console.log(...args)
+        })
     }
 }
-
-// Command Listener
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return
-    const command = client.commands.get(interaction.commandName)
-    if (!command) return
-    try {
-        await command.execute(interaction)
-    } catch (error) {
-        if (error) console.error(error)
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })
-    }
-})
-
-client.on('messageReactionAdd', async (reaction, user) => {
-    // When a reaction is received, check if the structure is partial
-    if (reaction.partial) {
-        // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
-        try {
-            await reaction.fetch()
-        } catch (error) {
-            console.error('Something went wrong when fetching the message:', error)
-            // Return as `reaction.message.author` may be undefined/null
-            return
-        }
-    }
-
-    // Now the message has been cached and is fully available
-    console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`)
-    // The reaction is now also fully available and the properties will be reflected accurately:
-    console.log(`${reaction.count} user(s) have given the same reaction to this message!`)
-})
 
 client.login(process.env.DISCORD_KEY)
