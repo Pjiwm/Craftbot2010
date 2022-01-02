@@ -11,3 +11,4 @@ services:
     environment:
       DISCORD_KEY: ${DISCORD_KEY}
       DISCORD_TEST_GUILD: ${DISCORD_TEST_GUILD}
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}

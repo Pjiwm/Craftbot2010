@@ -1,10 +1,11 @@
 declare module "discord.js" { export interface Client { commands: Collection<unknown, any> } }
-import { Intents, Interaction, Client, Collection, MessageReaction, User } from 'discord.js'
+import { Intents, Client, Collection } from 'discord.js'
 import fs from 'fs'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
-const TOKEN = process.env.DISCORD_KEY || '0'
-const TEST_GUILD_ID = process.env.DISCORD_TEST_GUILD
+const TOKEN = process.env.DISCORD_KEY || ''
+const TEST_GUILD_ID = process.env.DISCORD_TEST_GUILD || ''
+const CLIENT_ID = process.env.DISCORD_CLIENT_ID || ''
 
 
 const client = new Client({
@@ -23,9 +24,25 @@ const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWi
 client.commands = new Collection()
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`)
-    commands.push(command.data.toJSON)
+    commands.push(command.data)
     client.commands.set(command.data.name, command)
 }
+
+const rest = new REST({ version: '9' }).setToken(TOKEN);
+(async () => {
+    try {
+        console.log('Started refreshing application (/) commands.')
+
+        await rest.put(
+            Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID),
+            { body: commands },
+        )
+
+        console.log('Successfully reloaded application (/) commands.')
+    } catch (error) {
+        console.error(error)
+    }
+})()
 
 // event handler
 const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.ts'))
