@@ -22,4 +22,4 @@ const UserSchema = new Schema({
     }
 })
 
-export const ServerModel = model<IUser>('user', UserSchema)
+export const UserModel = model<IUser>('user', UserSchema)
