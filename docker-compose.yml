@@ -12,3 +12,9 @@ services:
       DISCORD_KEY: ${DISCORD_KEY}
       DISCORD_TEST_GUILD: ${DISCORD_TEST_GUILD}
       DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/db:/data/db
