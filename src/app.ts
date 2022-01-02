@@ -51,22 +51,12 @@ for (const file of eventFiles) {
     if (event.once) {
         client.once(event.name, (...args) => event.execute(...args))
     } else {
-        client.on(event.name, (...args) => event.execute(...args))
+        client.on(event.name, (...args) => {
+            event.execute(...args)
+            // console.log(...args)
+        })
     }
 }
-
-// Command Listener
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return
-    const command = client.commands.get(interaction.commandName)
-    if (!command) return
-    try {
-        await command.execute(interaction)
-    } catch (error) {
-        if (error) console.error(error)
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })
-    }
-})
 
 client.on('messageReactionAdd', async (reaction, user) => {
     // When a reaction is received, check if the structure is partial
