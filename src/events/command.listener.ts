@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Interaction } from "discord.js"
+import { Interaction } from "discord.js"
 
 export = {
     name: 'interactionCreate',
