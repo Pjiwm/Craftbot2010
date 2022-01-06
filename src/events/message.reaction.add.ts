@@ -29,7 +29,6 @@ export = {
         }
 
         guild = await ServerModel.findOne({ guildId: guildId })
-
         // check if it's the correct emoji 
         emoji = messageReaction.emoji.name
         if (emoji === guild?.positiveScore) {
@@ -61,13 +60,15 @@ export = {
             return
         }
 
-        // update the correct score
+        // update the correct score and update last reaction time for reacting user
         if (isPositiveScore) {
-            UserModel.findOneAndUpdate({ userId: messageAuthor, guildId: guildId }, { $inc: { positiveScoreCount: 1 } })
+            const update = await UserModel.findOneAndUpdate({ userId: messageAuthor?.id, guildId: guildId }, { $inc: { positiveScoreCount: 1 } })
+            console.log(update)
         } else {
-            UserModel.findOneAndUpdate({ userId: messageAuthor, guildId: guildId }, { $inc: { negativeScoreCount: 1 } })
+            await UserModel.findOneAndUpdate({ userId: messageAuthor?.id, guildId: guildId }, { $inc: { negativeScoreCount: 1 } })
         }
 
+        await UserModel.findOneAndUpdate({ userId: reactingUser.id, guildId: guildId }, { lastReaction: new Date() })
         console.log(`[${guildId}]: ${reactingUser.username} reacted to ${messageAuthor?.username} with '${emoji}'`)
     }
 }
