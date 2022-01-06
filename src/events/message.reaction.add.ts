@@ -48,11 +48,11 @@ export = {
 
         // if user is not present in DB add them first.
         if (!await UserModel.findOne({ userId: messageAuthor?.id })) {
-            await UserModel.create({ userId: messageAuthor?.id })
+            await UserModel.create({ userId: messageAuthor?.id, guildId: guildId })
         }
 
         if (!await UserModel.findOne({ userId: reactingUser.id })) {
-            await UserModel.create({ userId: reactingUser.id })
+            await UserModel.create({ userId: reactingUser.id, guildId: guildId })
         }
 
         // a user can't react to their own posts
@@ -63,9 +63,9 @@ export = {
 
         // update the correct score
         if (isPositiveScore) {
-            UserModel.findOneAndUpdate({ userId: messageAuthor }, { $inc: { positiveScoreCount: 1 } })
+            UserModel.findOneAndUpdate({ userId: messageAuthor, guildId: guildId }, { $inc: { positiveScoreCount: 1 } })
         } else {
-            UserModel.findOneAndUpdate({ userId: messageAuthor }, { $inc: { negativeScoreCount: 1 } })
+            UserModel.findOneAndUpdate({ userId: messageAuthor, guildId: guildId }, { $inc: { negativeScoreCount: 1 } })
         }
 
         console.log(`[${guildId}]: ${reactingUser.username} reacted to ${messageAuthor?.username} with '${emoji}'`)

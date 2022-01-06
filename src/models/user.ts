@@ -5,6 +5,7 @@ export interface IUser extends Document {
     positiveScoreCount: number
     negativeScoreCount: number
     guildId: string
+    lastReaction: Date
 }
 
 const UserSchema = new Schema({
@@ -24,6 +25,10 @@ const UserSchema = new Schema({
     guildId: {
         type: 'string',
         required: true
+    },
+    lastReaction: {
+        type: 'Date',
+        default: new Date('2000/1/1')
     }
 })
 
