@@ -1,5 +1,6 @@
 import { MessageReaction, User } from "discord.js"
 import { UserModel } from "../models/user"
+import { ServerModel } from "../models/server"
 
 export = {
     name: 'messageReactionAdd',
@@ -15,13 +16,32 @@ export = {
                 return
             }
         }
+        const messageAuthor = messageReaction.message.author
+        const reactingUser = user
 
+        // we don't wanna track bots
+        if (messageAuthor?.bot) {
+            return
+        }
+        // if user is not present in DB add them first.
+        if (!await UserModel.findOne({ userId: messageAuthor?.id })) {
+            await UserModel.create({ userId: messageAuthor?.id })
+        }
+
+        if (!await UserModel.findOne({ userId: reactingUser.id })) {
+            await UserModel.create({ userId: reactingUser.id })
+        }
+
+        // a user can't react to their own posts
+        if (messageAuthor == reactingUser) {
+            messageReaction.remove()
+            return
+        }
+
+        UserModel.findOneAndUpdate({ userId: messageAuthor }, { $inc: { positiveScoreCount: 1 } })
         // Now the message has been cached and is fully available
-        console.log(`${messageReaction.message.author}'s message "${messageReaction.message.content}" gained a reaction!`)
+        console.log(`${messageReaction.message.author?.id}'s message "${messageReaction.message.content}" gained a reaction!`)
         // The reaction is now also fully available and the properties will be reflected accurately:
         console.log(`${messageReaction.count} user(s) have given the same reaction to this message!`)
-        await UserModel.create({ userId: user.id }).catch((error) => {
-            console.log(error)
-        })
     }
 }
