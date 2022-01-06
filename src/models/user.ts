@@ -6,6 +6,7 @@ export interface IUser extends Document {
     negativeScoreCount: number
     guildId: string
     lastReaction: Date
+    ratio: any
 }
 
 const UserSchema = new Schema({
@@ -29,6 +30,19 @@ const UserSchema = new Schema({
     lastReaction: {
         type: 'Date',
         default: new Date('2000/1/1')
+    }
+}
+)
+
+UserSchema.virtual('ratio').get(function (this: IUser) {
+    if (this.positiveScoreCount === 0 && this.negativeScoreCount === 0) {
+        return 0
+    } else if (this.positiveScoreCount === 0) {
+        return - this.negativeScoreCount
+    } else if (this.negativeScoreCount === 0) {
+        return this.positiveScoreCount
+    } else {
+        return Math.round(this.positiveScoreCount / this.negativeScoreCount).toFixed(2)
     }
 })
 
