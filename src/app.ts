@@ -3,10 +3,12 @@ import { Intents, Client, Collection } from 'discord.js'
 import fs from 'fs'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
+import database = require('./database.connect')
 const TOKEN = process.env.DISCORD_KEY || ''
 const TEST_GUILD_ID = process.env.DISCORD_TEST_GUILD || ''
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID || ''
 
+database.connectToMongo()
 
 const client = new Client({
     intents: [

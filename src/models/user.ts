@@ -7,7 +7,7 @@ export interface IUser extends Document {
 }
 
 const UserSchema = new Schema({
-    guildId: {
+    userId: {
         type: 'string',
         required: true,
         unique: true

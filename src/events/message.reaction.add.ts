@@ -1,4 +1,5 @@
 import { MessageReaction, User } from "discord.js"
+import { UserModel } from "../models/user"
 
 export = {
     name: 'messageReactionAdd',
@@ -19,5 +20,8 @@ export = {
         console.log(`${messageReaction.message.author}'s message "${messageReaction.message.content}" gained a reaction!`)
         // The reaction is now also fully available and the properties will be reflected accurately:
         console.log(`${messageReaction.count} user(s) have given the same reaction to this message!`)
+        await UserModel.create({ userId: user.id }).catch((error) => {
+            console.log(error)
+        })
     }
 }
