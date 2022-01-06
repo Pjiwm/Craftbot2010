@@ -49,9 +49,9 @@ export = {
         if (!await UserModel.findOne({ userId: messageAuthor?.id })) {
             await UserModel.create({ userId: messageAuthor?.id, guildId: guildId })
         }
-
-        if (!await UserModel.findOne({ userId: reactingUser.id })) {
-            await UserModel.create({ userId: reactingUser.id, guildId: guildId })
+        let mongoReactionUser = await UserModel.findOne({ userId: reactingUser.id })
+        if (!mongoReactionUser) {
+            mongoReactionUser = await UserModel.create({ userId: reactingUser.id, guildId: guildId })
         }
 
         // a user can't react to their own posts
@@ -60,10 +60,17 @@ export = {
             return
         }
 
+        // A user can only react with a score emoji within certain time intervals
+        let minDiff = (Math.abs(Date.now().valueOf() - mongoReactionUser.lastReaction.valueOf())) / 1000 / 60
+        // TODO change minDiff value to something like an hour (60)
+        if (minDiff < 0.1) {
+            messageReaction.remove()
+            return
+        }
+
         // update the correct score and update last reaction time for reacting user
         if (isPositiveScore) {
-            const update = await UserModel.findOneAndUpdate({ userId: messageAuthor?.id, guildId: guildId }, { $inc: { positiveScoreCount: 1 } })
-            console.log(update)
+            await UserModel.findOneAndUpdate({ userId: messageAuthor?.id, guildId: guildId }, { $inc: { positiveScoreCount: 1 } })
         } else {
             await UserModel.findOneAndUpdate({ userId: messageAuthor?.id, guildId: guildId }, { $inc: { negativeScoreCount: 1 } })
         }
