@@ -18,6 +18,15 @@ export = {
         }
         const messageAuthor = messageReaction.message.author
         const reactingUser = user
+        const guildId = messageReaction.message.guildId
+
+        // check if a reaction for tracking score is used, if the server is not stored yet we add it
+        if (!await ServerModel.findOne({ guildId: guildId })) {
+            await ServerModel.create({ guildId: guildId })
+        }
+
+        const guild = await ServerModel.findOne({ guildId: guildId })
+        console.log(guild?.positiveScore)
 
         // we don't wanna track bots
         if (messageAuthor?.bot) {

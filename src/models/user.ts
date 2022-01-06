@@ -1,9 +1,10 @@
 import { Document, Schema, model } from "mongoose"
 
 export interface IUser extends Document {
-    userId: string,
+    userId: string
     positiveScoreCount: number
     negativeScoreCount: number
+    guildId: string
 }
 
 const UserSchema = new Schema({
@@ -19,6 +20,10 @@ const UserSchema = new Schema({
     negativeScoreCount: {
         type: 'number',
         default: 0
+    },
+    guildId: {
+        type: 'string',
+        required: true
     }
 })
 

@@ -1,11 +1,9 @@
 import { Document, Schema, model } from "mongoose"
-import { IUser, UserModel } from "./user"
 
 export interface IServer extends Document {
     guildId: string,
     positiveScore: string,
     negativeScore: string,
-    users: IUser[]
 }
 
 const ServerSchema = new Schema({
@@ -21,10 +19,6 @@ const ServerSchema = new Schema({
     negativeScore: {
         type: 'string',
         default: '👎'
-    },
-    users: {
-        type: [UserModel],
-        default: []
     }
 })
 
