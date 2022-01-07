@@ -13,7 +13,6 @@ const UserSchema = new Schema({
     userId: {
         type: 'string',
         required: true,
-        unique: true
     },
     positiveScoreCount: {
         type: 'number',
@@ -42,7 +41,6 @@ UserSchema.virtual('ratio').get(function (this: IUser) {
     } else if (this.negativeScoreCount === 0) {
         return this.positiveScoreCount
     } else {
-        console.log(this.positiveScoreCount / this.negativeScoreCount)
         return (this.positiveScoreCount / this.negativeScoreCount).toFixed(2)
     }
 })

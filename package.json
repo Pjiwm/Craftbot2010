@@ -4,9 +4,10 @@
   "description": "A discord bot",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/app.js",
-    "dev": "nodemon src/app.ts",
-    "build": "tsc -p ."
+    "start": "NODE_ENV=prod node dist/app.js",
+    "dev": "NODE_ENV=dev nodemon src/app.ts",
+    "build": "NODE_ENV=prod tsc -p .",
+    "serve": "NODE_ENV=prod node src/app.ts"
   },
   "author": "Pjiwm",
   "license": "ISC",
