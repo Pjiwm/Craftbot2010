@@ -72,7 +72,7 @@ export = {
         // A user can only react with a score emoji within certain time intervals
         let minDiff = (Math.abs(Date.now().valueOf() - mongoReactionUser.lastReaction.valueOf())) / 1000 / 60
         // TODO change minDiff value to something like an hour (60)
-        if (minDiff < 0.1) {
+        if (minDiff < 2) {
             messageReaction.remove()
             return
         }

@@ -1,8 +1,7 @@
-import { Embed, SlashCommandBuilder, SlashCommandSubcommandBuilder } from '@discordjs/builders'
-import { CommandInteraction, GuildEmoji, GuildMemberRoleManager } from 'discord.js'
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from '@discordjs/builders'
+import { CommandInteraction } from 'discord.js'
 import { ServerModel } from '../models/server'
 import emojiRegex = require('emoji-regex')
-import { Permissions } from 'discord.js/node_modules/discord-api-types'
 const POSITIVE = 'positive-score'
 const NEGATIVE = 'negative-score'
 const EMOJI = 'emoji'
@@ -27,6 +26,7 @@ export = {
         if (!interaction.memberPermissions?.has('MANAGE_GUILD')) {
             const msg = 'Sorry, but you do not have permission to execute this command.'
             interaction.client.users.cache.get(interaction.user.id)?.send(msg)
+            interaction.replied
             return
         }
 
