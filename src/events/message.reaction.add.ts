@@ -30,10 +30,19 @@ export = {
 
         guild = await ServerModel.findOne({ guildId: guildId })
         // check if it's the correct emoji 
-        emoji = messageReaction.emoji.name
-        if (emoji === guild?.positiveScore) {
+        emoji = messageReaction.emoji
+        const positiveEmojiId = guild?.positiveScore.split(':')[2]
+        const negativeEmojiId = guild?.negativeScore.split(':')[2]
+        let positiveEmoji = positiveEmojiId?.substring(0, positiveEmojiId.length - 1) || guild?.positiveScore
+        let negativeEmoji = negativeEmojiId?.substring(0, negativeEmojiId.length - 1) || guild?.negativeScore
+
+        if (emoji.name === positiveEmoji) {
             isPositiveScore = true
-        } else if (emoji === guild?.negativeScore) {
+        } else if (emoji.name === negativeEmoji) {
+            isPositiveScore = false
+        } else if (emoji.id === positiveEmoji) {
+            isPositiveScore = true
+        } else if (emoji.id === negativeEmoji) {
             isPositiveScore = false
         } else {
             // not the emoji we're tracking
