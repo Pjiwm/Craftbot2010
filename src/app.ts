@@ -8,6 +8,15 @@ const TOKEN = process.env.DISCORD_KEY || ''
 const TEST_GUILD_ID = process.env.DISCORD_TEST_GUILD || ''
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID || ''
 
+let dir = 'src'
+let extension = '.ts'
+
+// if we're in production mode we have js files instead of ts and the directory is called dist not src
+if (process.env.NODE_ENV === 'prod') {
+    dir = 'dist'
+    extension = '.js'
+}
+
 database.connectToMongo()
 
 const client = new Client({
@@ -22,7 +31,7 @@ const client = new Client({
 
 // command handler
 const commands: any[] = []
-const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.ts'))
+const commandFiles = fs.readdirSync(`./${dir}/commands`).filter(file => file.endsWith(extension))
 client.commands = new Collection()
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`)
@@ -32,22 +41,35 @@ for (const file of commandFiles) {
 // register commands for development guild
 const rest = new REST({ version: '9' }).setToken(TOKEN);
 (async () => {
-    try {
-        console.log('Started refreshing application (/) commands.')
+    if (process.env.NODE_ENV === 'dev') {
+        try {
+            console.log('Started refreshing application guild commands.')
+            await rest.put(
+                Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID),
+                { body: commands },
+            )
 
-        await rest.put(
-            Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID),
-            { body: commands },
-        )
-
-        console.log('Successfully reloaded application (/) commands.')
-    } catch (error) {
-        console.error(error)
+            console.log('Successfully reloaded application guild commands.')
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    if (process.env.NODE_ENV === 'prod') {
+        try {
+            console.log('Started refreshing application global commands.')
+            await rest.put(
+                Routes.applicationCommands(CLIENT_ID),
+                { body: commands },
+            )
+            console.log('Successfully reloaded application global commands.')
+        } catch (error) {
+            console.error(error)
+        }
     }
 })()
 
 // event handler
-const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.ts'))
+const eventFiles = fs.readdirSync(`./${dir}/events`).filter(file => file.endsWith(extension))
 for (const file of eventFiles) {
     const event = require(`./events/${file}`)
     if (event.once) {
