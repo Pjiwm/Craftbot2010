@@ -35,14 +35,17 @@ const UserSchema = new Schema({
 )
 
 UserSchema.virtual('ratio').get(function (this: IUser) {
+    console.log(this.positiveScoreCount)
+    console.log(this.negativeScoreCount)
     if (this.positiveScoreCount === 0 && this.negativeScoreCount === 0) {
         return 0
     } else if (this.positiveScoreCount === 0) {
-        return - this.negativeScoreCount
+        return this.negativeScoreCount * -1
     } else if (this.negativeScoreCount === 0) {
         return this.positiveScoreCount
     } else {
-        return Math.round(this.positiveScoreCount / this.negativeScoreCount).toFixed(2)
+        console.log(this.positiveScoreCount / this.negativeScoreCount)
+        return (this.positiveScoreCount / this.negativeScoreCount).toFixed(2)
     }
 })
 
