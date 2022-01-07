@@ -29,9 +29,6 @@ export = {
         } else {
             discordUser = interaction.user
         }
-        console.log(discordUser)
-        console.log(discordUser.avatar)
-        console.log(`${baseAvatarUrl}/${discordUser.id}/${discordUser.avatar}`)
         const guildId = interaction.guildId
         let guild = await ServerModel.findOne({ guildId: guildId })
 
