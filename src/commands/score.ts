@@ -1,5 +1,5 @@
 import { Embed, SlashCommandBuilder, SlashCommandMentionableOption } from '@discordjs/builders'
-import { CommandInteraction, Guild, GuildMember, User } from 'discord.js'
+import { CommandInteraction, GuildMember } from 'discord.js'
 import { ServerModel } from '../models/server'
 import { UserModel } from '../models/user'
 const baseAvatarUrl = 'https://cdn.discordapp.com/avatars'
