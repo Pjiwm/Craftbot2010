@@ -44,7 +44,7 @@ export = {
         const scoreEmbed: Embed = new Embed()
             .setColor(111111)
             .setAuthor({ name: discordUser.username, iconURL: `${baseAvatarUrl}/${discordUser.id}/${discordUser.avatar}` })
-            .setTitle(`${interaction.user.username}'s stats`)
+            .setTitle(`${discordUser.username}'s stats`)
             .addFields(
                 { name: `positive score    ${guild?.positiveScore}`, value: `${mongoUser?.positiveScoreCount}` },
                 { name: `negative score    ${guild?.negativeScore}`, value: `${mongoUser?.negativeScoreCount}` },
