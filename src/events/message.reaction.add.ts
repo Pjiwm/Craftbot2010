@@ -65,7 +65,7 @@ export = {
 
         // a user can't react to their own posts
         if (messageAuthor == reactingUser) {
-            messageReaction.remove()
+            messageReaction.users.remove(reactingUser.id)
             return
         }
 
@@ -73,7 +73,7 @@ export = {
         let minDiff = (Math.abs(Date.now().valueOf() - mongoReactionUser.lastReaction.valueOf())) / 1000 / 60
         // TODO change minDiff value to something like an hour (60)
         if (minDiff < 2) {
-            messageReaction.remove()
+            messageReaction.users.remove(reactingUser.id)
             return
         }
 
